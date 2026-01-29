@@ -7,7 +7,30 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """
+You are a pure character-level transducer.
+
+TASK:
+- The user provides a single input word.
+- You must return only the reversed word.
+
+EXAMPLES:
+Input: httpapi
+Output: ipaptth
+
+Input: status
+Output: sutats
+
+Input: httpok
+Output: koptth
+
+Input: http404
+Output: 404ptth
+
+Input:http
+Output: ptth
+
+"""
 
 USER_PROMPT = """
 Reverse the order of letters in the following word. Only output the reversed word, no other text:

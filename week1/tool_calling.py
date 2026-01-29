@@ -70,7 +70,19 @@ TOOL_REGISTRY: Dict[str, Callable[..., str]] = {
 # ==========================
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """
+You are a helper that triggers specific python tools.
+When the user asks to analyze functions, you must respond ONLY with a JSON object.
+
+The available tool is:
+- tool: "output_every_func_return_type"
+  args: {"file_path": <string or empty string>}
+
+Example response:
+{"tool": "output_every_func_return_type", "args": {"file_path": ""}}
+
+Do not include any conversational text, only the JSON.
+"""
 
 
 def resolve_path(p: str) -> str:

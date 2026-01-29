@@ -15,7 +15,13 @@ Keep the implementation minimal.
 """
 
 # TODO: Fill this in!
-YOUR_REFLEXION_PROMPT = ""
+YOUR_REFLEXION_PROMPT = """
+You are an expert Python developer. 
+The previous code implementation failed some validation tests. 
+Review the original code and the specific failure messages provided by the user.
+Fix the logic to ensure all password requirements are met
+Output ONLY the corrected Python code block.
+"""
 
 
 # Ground-truth test suite used to evaluate generated code
@@ -96,7 +102,14 @@ def your_build_reflexion_context(prev_code: str, failures: List[str]) -> str:
 
     Return a string that will be sent as the user content alongside the reflexion system prompt.
     """
-    return ""
+    # 将失败的原因列表转为带序号的字符串
+    failure_reports = "\n".join([f"- {f}" for f in failures])
+    
+    return f"""
+        The following code is incorrect:
+        ```python
+        {prev_code}
+        It failed these specific test cases: {failure_reports} """
 
 
 def apply_reflexion(
