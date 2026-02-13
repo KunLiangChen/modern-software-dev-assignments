@@ -25,35 +25,51 @@ Key features include:
 
 ### Prerequisites
 
-- **Conda**: Recommended for environment isolation.
-- **Poetry**: For managing Python dependencies.
-- **Ollama**: Required for LLM-powered features.
+* **Python 3.12**: The core runtime required for this project.
+* **Conda**: For environment isolation and Python version management.
+* **Ollama**: Required for LLM-powered features. [Download here](https://ollama.com/).
 
 ### Setup & Installation
 
-1. **Activate Environment**:
-   ```bash
-   conda activate cs146s
-   ```
+1. **Create and Activate Environment**:
+Initialize a new Conda environment with Python 3.12:
+```bash
+conda create -n cs146s python=3.12 -y
+conda activate cs146s
 
-2. **Install Dependencies**:
-   ```bash
-   poetry install
-   ```
+```
 
-3. **Launch Ollama**:
-   Ensure Ollama is running on your machine and pull the required model:
-   ```bash
-   ollama pull llama3.2:1b
-   ollama run llama3.2:1b
-   ```
 
+2. **Install Poetry**:
+If you don't have Poetry installed, run the official installer:
+```bash
+curl -sSL https://install.python-poetry.org | python -
+
+```
+
+
+3. **Install Dependencies**:
+Install all project requirements using Poetry (ensure you are in the project root):
+```bash
+poetry install --no-interaction
+
+```
+
+
+4. **Launch Ollama**:
+Ensure the Ollama application is running on your machine and pull the required model:
+```bash
+ollama pull llama3.2:1b
+ollama run llama3.2:1b
+
+```
 ### Running the Application
 
 Start the FastAPI server from the project root:
 
 ```bash
 poetry run uvicorn week2.app.main:app --reload
+
 ```
 
 Open your browser and navigate to `http://127.0.0.1:8000/`.
