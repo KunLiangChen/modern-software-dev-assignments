@@ -15,9 +15,21 @@ def ensure_data_directory_exists() -> None:
 
 
 def get_connection() -> sqlite3.Connection:
+    """
+    Open a new SQLite connection configured for use in a web application.
+
+    - Ensures the data directory exists.
+    - Enables foreign key constraints.
+    - Uses Row factory so callers can access columns by name.
+
+    A new connection is created per call; callers should use context managers
+    (`with get_connection() as conn:`) so connections are closed promptly.
+    """
     ensure_data_directory_exists()
-    connection = sqlite3.connect(DB_PATH)
+    connection = sqlite3.connect(DB_PATH, check_same_thread=False)
     connection.row_factory = sqlite3.Row
+    # Enforce foreign key constraints for better data integrity.
+    connection.execute("PRAGMA foreign_keys = ON")
     return connection
 
 

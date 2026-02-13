@@ -1,14 +1,26 @@
 from __future__ import annotations
 
+import logging
 import os
 import re
 from typing import List
-import json
-from typing import Any
+
 from ollama import chat
 from dotenv import load_dotenv
+from pydantic import BaseModel
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
+
+# Default to a small model for lower resource usage; override with OLLAMA_MODEL env.
+OLLAMA_EXTRACT_MODEL = os.getenv("OLLAMA_MODEL", "llama3.2:1b")
+
+
+class ActionItemsResponse(BaseModel):
+    """Schema for LLM action-item extraction: JSON object with an array of strings."""
+
+    items: List[str]
 
 BULLET_PREFIX_PATTERN = re.compile(r"^\s*([-*•]|\d+\.)\s+")
 KEYWORD_PREFIXES = (
@@ -64,6 +76,42 @@ def extract_action_items(text: str) -> List[str]:
         seen.add(lowered)
         unique.append(item)
     return unique
+
+
+def extract_action_items_llm(text: str) -> List[str]:
+    """
+    Extract action items from text using an LLM via Ollama with structured output
+    (JSON array of strings). Requires Ollama to be running with a compatible model
+    (e.g. ollama run llama3.2:1b).
+    """
+    text = (text or "").strip()
+    if not text:
+        return []
+
+    prompt = (
+        "Extract all action items, to-dos, tasks, and follow-up items from the following text. "
+        "Return each item as a clear, concise phrase. "
+        "Return as JSON with a single key \"items\" whose value is an array of strings. "
+        "If there are no action items, return an empty array for \"items\".\n\n"
+        "Text:\n"
+        f"{text}"
+    )
+
+    try:
+        response = chat(
+            model=OLLAMA_EXTRACT_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            format=ActionItemsResponse.model_json_schema(),
+            options={"temperature": 0},
+        )
+        raw = (response.message.content or "").strip()
+        if not raw:
+            return []
+        parsed = ActionItemsResponse.model_validate_json(raw)
+        return list(parsed.items) if parsed.items else []
+    except Exception as e:
+        logger.warning("Ollama action-item extraction failed: %s", e)
+        return []
 
 
 def _looks_imperative(sentence: str) -> bool:
