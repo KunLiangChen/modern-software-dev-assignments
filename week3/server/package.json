@@ -1,0 +1,26 @@
+{
+  "name": "github-issues-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for GitHub Issues",
+  "main": "build/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/local.js",
+    "dev": "ts-node-esm src/local.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.0",
+    "@modelcontextprotocol/sdk": "^1.2.0",
+    "@octokit/rest": "^20.1.1",
+    "dotenv": "^16.4.5",
+    "hono": "^4.0.0",
+    "mcp-handler": "^1.0.7",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.2"
+  }
+}
